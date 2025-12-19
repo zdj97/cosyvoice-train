@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
 #     tmp1,tmp2,tmp3=audio_id.split('-')
 
-#     audio_path = f"/sharedir/nlp/workspace/yuqiangz_living_data/models/gigaspeech2/data/th/train/{tmp1}/{tmp2}/{audio_id}.wav"
+#     audio_path = f"/path/{tmp1}/{tmp2}/{audio_id}.wav"
 
 #     wav_scp_data.append(f"{speaker_id}|{audio_path}|{text_content}\n")
 # with open('train_multi_language/thai.csv', 'w', encoding='utf-8') as f:
