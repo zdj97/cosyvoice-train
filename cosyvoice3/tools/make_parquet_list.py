@@ -89,20 +89,20 @@ if __name__ == "__main__":
     utt2wav, utt2text, utt2spk, utt2instruct = {}, {}, {}, {}
     with open('{}/wav.scp'.format(args.src_dir)) as f:
         for l in f:
-            l = l.replace('\n', '').split()
+            l = l.replace('\n', '').split('\t')
             utt2wav[l[0]] = l[1]
     with open('{}/text'.format(args.src_dir)) as f:
         for l in f:
-            l = l.replace('\n', '').split()
+            l = l.replace('\n', '').split('\t')
             utt2text[l[0]] = ' '.join(l[1:])
     with open('{}/utt2spk'.format(args.src_dir)) as f:
         for l in f:
-            l = l.replace('\n', '').split()
+            l = l.replace('\n', '').split('\t')
             utt2spk[l[0]] = l[1]
     if args.instruct is True:
         with open('{}/instruct'.format(args.src_dir)) as f:
             for l in f:
-                l = l.replace('\n', '').split()
+                l = l.replace('\n', '').split('\t')
                 utt2instruct[l[0]] = ' '.join(l[1:])
     utt2embedding = torch.load('{}/utt2embedding.pt'.format(args.src_dir))
     spk2embedding = torch.load('{}/spk2embedding.pt'.format(args.src_dir))

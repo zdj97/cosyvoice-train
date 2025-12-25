@@ -83,8 +83,14 @@ class PreLookaheadLayer(nn.Module):
         """
         inputs: (batch_size, seq_len, channels)
         """
+        # print('inputs', inputs.shape) ## inputs cosy3: torch.Size([89, 56, 80] 
+        # print('context', context.shape) ## context cosy3: torch.Size([89])
+        # exit()
         outputs = inputs.transpose(1, 2).contiguous()
         context = context.transpose(1, 2).contiguous()
+        # print('outputs', outputs.shape) ## outputs cosy3: torch.Size([1, 80, 125]
+        # print('context', context.shape) ## context cosy3: torch.Size([1, 80, 3])
+        # exit()
         # look ahead
         if context.size(2) == 0:
             outputs = F.pad(outputs, (0, self.pre_lookahead_len), mode='constant', value=0.0)

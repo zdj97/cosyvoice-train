@@ -240,6 +240,8 @@ def tokenize(data, get_tokenizer, allowed_special, mode='train'):
     """
     tokenizer = get_tokenizer()
     for sample in data:
+        # print(sample['instruct'])
+        # exit()
         assert 'text' in sample
         sample['text_token'] = tokenizer.encode(sample['text'], allowed_special=allowed_special)
         if 'instruct' in sample:

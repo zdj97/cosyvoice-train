@@ -332,8 +332,17 @@ class CausalMaskedDiffWithDiT(torch.nn.Module):
         token = self.input_embedding(torch.clamp(token, min=0)) * mask
 
         # text encode
-        h, h_lengths = self.encoder(token, token_len, streaming=streaming)
-        h = self.encoder_proj(h)
+        ## cosy2
+        # h, h_lengths = self.encoder(token, token_len, streaming=streaming)
+        # h = self.encoder_proj(h)
+        ## cosy3
+        h = self.pre_lookahead_layer(token)
+        h = h.repeat_interleave(self.token_mel_ratio, dim=1)
+        mask = mask.repeat_interleave(self.token_mel_ratio, dim=1).squeeze(dim=-1)
+        min_len = min(feat.size(1), h.size(1))
+        h = h[:, :min_len]
+        mask = mask[:, :min_len]
+        feat = feat[:, :min_len]
 
         # get conditions
         conds = torch.zeros(feat.shape, device=token.device)
@@ -344,7 +353,7 @@ class CausalMaskedDiffWithDiT(torch.nn.Module):
             conds[i, :index] = feat[i, :index]
         conds = conds.transpose(1, 2)
 
-        mask = (~make_pad_mask(h_lengths.sum(dim=-1).squeeze(dim=1))).to(h)
+        # mask = (~make_pad_mask(h_lengths.sum(dim=-1).squeeze(dim=1))).to(h)
         loss, _ = self.decoder.compute_loss(
             feat.transpose(1, 2).contiguous(),
             mask.unsqueeze(1),
@@ -375,7 +384,7 @@ class CausalMaskedDiffWithDiT(torch.nn.Module):
         token, token_len = torch.concat([prompt_token, token], dim=1), prompt_token_len + token_len
         mask = (~make_pad_mask(token_len)).unsqueeze(-1).to(embedding)
         token = self.input_embedding(torch.clamp(token, min=0)) * mask
-
+        # print('finalize', finalize)
         # text encode
         if finalize is True:
             h = self.pre_lookahead_layer(token)
